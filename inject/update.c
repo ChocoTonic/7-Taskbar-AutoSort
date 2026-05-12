@@ -38,17 +38,9 @@ static BOOL FetchLatestVersion(WCHAR *pVersionOut, int cchMax)
                                   WINHTTP_FLAG_SECURE);
     if (!hRequest) goto cleanup;
 
-    if (!WinHttpSendRequest(hRequest,
-                            WINHTTP_NO_ADDITIONAL_HEADERS,
-                            0,
-                            NULL,
-                            0,
-                            0,
-                            0))
-        goto cleanup;
+    if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, NULL, 0, 0, 0)) goto cleanup;
 
-    if (!WinHttpReceiveResponse(hRequest, NULL))
-        goto cleanup;
+    if (!WinHttpReceiveResponse(hRequest, NULL)) goto cleanup;
 
     pResponse = (LPSTR)malloc(8192);
     if (!pResponse) goto cleanup;
@@ -79,8 +71,7 @@ BOOL UpdateCheckAvailable(WCHAR *pNewVersion, int cchMax)
 {
     WCHAR szLatestVersion[64] = {0};
 
-    if (!FetchLatestVersion(szLatestVersion, 64))
-        return FALSE;
+    if (!FetchLatestVersion(szLatestVersion, 64)) return FALSE;
 
     wcscpy_s(pNewVersion, cchMax, AUTOSORT_VERSION_STR);
     if (VersionCompare(AUTOSORT_VERSION_STR, szLatestVersion))
@@ -117,26 +108,18 @@ static BOOL DownloadFile(const WCHAR *pUrl, const WCHAR *pFilePath)
     hConnect = WinHttpConnect(hSession, L"github.com", INTERNET_DEFAULT_HTTPS_PORT, 0);
     if (!hConnect) goto cleanup;
 
-    hRequest = WinHttpOpenRequest(hConnect,
-                                  L"GET",
-                                  pUrl,
-                                  L"HTTP/1.1",
-                                  WINHTTP_NO_REFERER,
-                                  WINHTTP_DEFAULT_ACCEPT_TYPES,
-                                  WINHTTP_FLAG_SECURE);
+    hRequest = WinHttpOpenRequest(
+        hConnect, L"GET", pUrl, L"HTTP/1.1", WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE);
     if (!hRequest) goto cleanup;
 
-    if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, NULL, 0, 0, 0))
-        goto cleanup;
+    if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, NULL, 0, 0, 0)) goto cleanup;
 
-    if (!WinHttpReceiveResponse(hRequest, NULL))
-        goto cleanup;
+    if (!WinHttpReceiveResponse(hRequest, NULL)) goto cleanup;
 
     while (WinHttpReadData(hRequest, buffer, sizeof(buffer), &dwSize))
     {
         if (dwSize == 0) break;
-        if (!WriteFile(hFile, buffer, dwSize, &dwWritten, NULL) || dwWritten != dwSize)
-            goto cleanup;
+        if (!WriteFile(hFile, buffer, dwSize, &dwWritten, NULL) || dwWritten != dwSize) goto cleanup;
     }
 
     bSuccess = TRUE;
@@ -165,7 +148,8 @@ void UpdateApply(const WCHAR *pNewVersion)
     wcscpy_s(szOldPath, MAX_PATH, szExePath);
     wcscat_s(szOldPath, MAX_PATH, L".old");
 
-    swprintf_s(szDownloadUrl, MAX_PATH,
+    swprintf_s(szDownloadUrl,
+               MAX_PATH,
                L"/ChocoTonic/7-Taskbar-AutoSort/releases/download/v%s/7-Taskbar-AutoSort.exe",
                pNewVersion);
 
@@ -197,15 +181,12 @@ void UpdateApply(const WCHAR *pNewVersion)
 BOOL UpdatePromptIfAvailable(HWND hParent)
 {
     WCHAR szNewVersion[64] = {0};
-    if (!UpdateCheckAvailable(szNewVersion, 64))
-        return FALSE;
+    if (!UpdateCheckAvailable(szNewVersion, 64)) return FALSE;
 
     WCHAR szPrompt[256];
-    swprintf_s(szPrompt, 256,
-               L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
+    swprintf_s(szPrompt, 256, L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
 
-    if (MessageBoxW(hParent, szPrompt, L"Update Available",
-                    MB_YESNO | MB_ICONINFORMATION) == IDYES)
+    if (MessageBoxW(hParent, szPrompt, L"Update Available", MB_YESNO | MB_ICONINFORMATION) == IDYES)
     {
         UpdateApply(szNewVersion);
     }

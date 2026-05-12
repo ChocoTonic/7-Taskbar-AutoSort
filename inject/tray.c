@@ -63,8 +63,7 @@ static void ShowContextMenu(HWND hWnd)
 static void CheckForUpdates(HWND hWnd)
 {
     if (!UpdatePromptIfAvailable(hWnd))
-        MessageBoxW(hWnd, L"You are running the latest version.",
-                    L"Up to Date", MB_OK | MB_ICONINFORMATION);
+        MessageBoxW(hWnd, L"You are running the latest version.", L"Up to Date", MB_OK | MB_ICONINFORMATION);
 }
 
 static LRESULT CALLBACK TrayWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -111,14 +110,11 @@ BOOL TrayInit(HINSTANCE hInst)
     wc.hInstance = hInst;
     wc.lpszClassName = TRAY_CLASS_NAME;
 
-    if (!RegisterClassW(&wc))
-        return FALSE;
+    if (!RegisterClassW(&wc)) return FALSE;
 
-    g_hTrayWnd = CreateWindowExW(0, TRAY_CLASS_NAME, L"7-Taskbar-AutoSort",
-                                 WS_OVERLAPPEDWINDOW, 0, 0, 0, 0,
-                                 HWND_MESSAGE, NULL, hInst, NULL);
-    if (!g_hTrayWnd)
-        return FALSE;
+    g_hTrayWnd = CreateWindowExW(
+        0, TRAY_CLASS_NAME, L"7-Taskbar-AutoSort", WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, HWND_MESSAGE, NULL, hInst, NULL);
+    if (!g_hTrayWnd) return FALSE;
 
     g_nid.cbSize = sizeof(NOTIFYICONDATA);
     g_nid.hWnd = g_hTrayWnd;

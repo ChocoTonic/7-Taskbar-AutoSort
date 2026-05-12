@@ -1,0 +1,82 @@
+---
+Language: C
+BasedOnStyle: LLVM
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+# Braces — Allman style (opening brace on its own line)
+BreakBeforeBraces: Allman
+
+# Column limit
+ColumnLimit: 120
+
+# Pointers: int *p, not int* p
+PointerAlignment: Right
+
+# Spaces
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceAfterCStyleCast: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeSquareBrackets: false
+
+# Short constructs
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+
+# Line breaking
+AlwaysBreakAfterReturnType: None
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+
+# Switch
+IndentCaseLabels: false
+
+# Trailing commas / empty lines
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Include ordering — keep existing order (system then local)
+SortIncludes: Never
+
+# Comments
+ReflowComments: false
+
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+BreakBeforeBraces: Allman
+ColumnLimit: 120
+PointerAlignment: Right
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+IndentCaseLabels: false
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+SortIncludes: Never
+ReflowComments: false
+---

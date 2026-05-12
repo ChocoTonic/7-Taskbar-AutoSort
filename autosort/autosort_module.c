@@ -11,9 +11,9 @@
 
 #include "stdafx.h"
 #include "autosort_module.h"
-#include "functions.h"          // DO2, GetButtonWnd, etc.
-#include "explorer_vars.h"      // EV_MM_TASKLIST_BUTTON_GROUPS_HDPA
-#include "wnd_proc.h"           // MSG_DLL_CALLFUNC_PARAM, CALLFUCN_PARAM
+#include "functions.h"     // DO2, GetButtonWnd, etc.
+#include "explorer_vars.h" // EV_MM_TASKLIST_BUTTON_GROUPS_HDPA
+#include "wnd_proc.h"      // MSG_DLL_CALLFUNC_PARAM, CALLFUCN_PARAM
 
 // 7TT globals defined in dll.c.
 extern HWND hTaskbarWnd;
@@ -43,8 +43,7 @@ static LONG_PTR AutosortAllGroupsOnTaskbarThread(LONG_PTR lpMMTaskListLongPtr)
     {
         if (!button_groups[i]) continue;
         int type = (int)button_groups[i][DO2(6, 8)];
-        if (type == 1 || type == 3)
-            SortButtonGroupItems(button_groups[i]);
+        if (type == 1 || type == 3) SortButtonGroupItems(button_groups[i]);
     }
 
     return 0;

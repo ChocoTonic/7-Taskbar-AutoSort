@@ -34,8 +34,7 @@ time_t SettingsGetLastCheckTime(void)
 {
     WCHAR szVal[32] = {0};
     UINT sz = ARRAYSIZE(szVal);
-    if (PSGetSingleString(SECTION_NAME, KEY_LAST_CHECK, szVal, &sz) != ERROR_SUCCESS)
-        return 0;
+    if (PSGetSingleString(SECTION_NAME, KEY_LAST_CHECK, szVal, &sz) != ERROR_SUCCESS) return 0;
     return (time_t)_wtoi64(szVal);
 }
 

@@ -74,8 +74,7 @@ TEST(ParseVersionFromJson, TagNameNotString)
 TEST(ParseVersionFromJson, LargeReleaseJson)
 {
     // Simulate a realistic GitHub releases/latest payload
-    const char *json =
-        R"({"url":"https://api.github.com/repos/X/Y/releases/1","tag_name":"v0.9.1",)"
-        R"("name":"Release 0.9.1","draft":false,"prerelease":false,"body":"Changelog here."})";
+    const char *json = R"({"url":"https://api.github.com/repos/X/Y/releases/1","tag_name":"v0.9.1",)"
+                       R"("name":"Release 0.9.1","draft":false,"prerelease":false,"body":"Changelog here."})";
     EXPECT_EQ(Parse(json), L"0.9.1");
 }

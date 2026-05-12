@@ -11,8 +11,25 @@ permissions:
   contents: write
 
 jobs:
+  format-check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check formatting
+        run: |
+          $sources = @(
+            "inject\inject.c","inject\json_util.c","inject\json_util.h",
+            "inject\settings.c","inject\settings.h","inject\tray.c","inject\tray.h",
+            "inject\update.c","inject\update.h","inject\version_compare.c","inject\version_compare.h",
+            "autosort\autosort_module.c","autosort\autosort_module.h",
+            "tests\test_json_util.cpp","tests\test_version_compare.cpp"
+          )
+          clang-format --dry-run --Werror $sources
+        shell: pwsh
+
   build:
     runs-on: windows-latest
+    needs: format-check
     strategy:
       matrix:
         config: [Release]

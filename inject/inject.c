@@ -20,7 +20,8 @@ static BOOL ExtractDll(void)
     int i = GetModuleFileNameW(NULL, szExePath, MAX_PATH);
     if (i == 0) return FALSE;
 
-    while (i-- && szExePath[i] != L'\\');
+    while (i-- && szExePath[i] != L'\\')
+        ;
     lstrcpyW(&szExePath[i + 1], L"autosort.dll");
     lstrcpyW(szDllPath, szExePath);
 
@@ -51,7 +52,9 @@ static BOOL ExtractDll(void)
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int nShowCmd)
 {
-    (void)hPrevInst; (void)pCmdLine; (void)nShowCmd;
+    (void)hPrevInst;
+    (void)pCmdLine;
+    (void)nShowCmd;
 
     int opts[OPTS_COUNT];
     ZeroMemory(opts, sizeof(opts));
@@ -68,15 +71,12 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         UpdatePromptIfAvailable(NULL);
     }
 
-    if (!ExtractDll())
-        return 1;
+    if (!ExtractDll()) return 1;
 
     DWORD err = ExplorerInject(NULL, WM_APP, GetUserDefaultUILanguage(), opts, NULL);
-    if (err != 0)
-        return (int)err;
+    if (err != 0) return (int)err;
 
-    if (!TrayInit(hInst))
-        return 1;
+    if (!TrayInit(hInst)) return 1;
 
     MSG msg;
     while (GetMessageW(&msg, NULL, 0, 0))

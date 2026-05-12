@@ -2,10 +2,11 @@
 #include <windows.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-BOOL ParseVersionFromJson(const char *pJson, WCHAR *pOut, int cchMax);
+    BOOL ParseVersionFromJson(const char *pJson, WCHAR *pOut, int cchMax);
 
 #ifdef __cplusplus
 }
