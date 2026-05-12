@@ -74,10 +74,26 @@ static DWORD WINAPI AutosortPollThreadProc(LPVOID p)
 {
     (void)p;
 
+    DWORD elapsed = 0;
+    DWORD interval = ReadPollIntervalMs();
+
     for (;;)
     {
-        DWORD wait = WaitForSingleObject(g_hStopEvent, ReadPollIntervalMs());
-        if (wait == WAIT_OBJECT_0) break;
+        if (WaitForSingleObject(g_hStopEvent, 1000) == WAIT_OBJECT_0) break;
+        elapsed += 1000;
+
+        // Re-read interval each tick; reset countdown on change so new settings
+        // take effect within one second rather than after the full old interval.
+        DWORD newInterval = ReadPollIntervalMs();
+        if (newInterval != interval)
+        {
+            interval = newInterval;
+            elapsed = 0;
+            continue;
+        }
+
+        if (elapsed < interval) continue;
+        elapsed = 0;
 
         // Bail if 7TT's bootstrap hasn't populated the globals yet, or if
         // the taskbar window has gone away (e.g., explorer restart in progress).
