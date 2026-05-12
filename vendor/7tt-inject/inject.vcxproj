@@ -46,7 +46,7 @@
     <TargetName>7-Taskbar-AutoSort</TargetName>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
-    <IncludePath>.;include;..\7tt-include;..\7tt-dll;$(IncludePath)</IncludePath>
+    <IncludePath>..\cjson;.;include;..\7tt-include;..\7tt-dll;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -82,6 +82,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\cjson\cJSON.c">
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
     <ClCompile Include="..\..\inject\inject.c" />
     <ClCompile Include="..\..\inject\tray.c" />
     <ClCompile Include="..\..\inject\update.c" />
@@ -98,6 +101,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\cjson\cJSON.h" />
     <ClInclude Include="explorer_inject.h" />
     <ClInclude Include="explorer_inject_functions.h" />
     <ClInclude Include="..\7tt-include\inject_init_struct_def.h" />
