@@ -30,3 +30,29 @@ jobs:
           path: |
             build/${{ matrix.config }}-${{ matrix.platform }}/7-Taskbar-AutoSort.exe
             build/${{ matrix.config }}-${{ matrix.platform }}/autosort.dll
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: release-${{ github.sha }}
+          name: Release ${{ github.sha }}
+          files: artifacts/**/*
+          body: |
+            Build artifacts for commit ${{ github.sha }}
+
+            - Release x64: autosort.dll & 7-Taskbar-AutoSort.exe
+            - Release Win32: autosort.dll & 7-Taskbar-AutoSort.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
