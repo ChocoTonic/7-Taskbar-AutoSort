@@ -36,8 +36,17 @@ jobs:
         platform: [x64]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache submodules
+        id: vendor-cache
+        uses: actions/cache@v4
         with:
-          submodules: true
+          path: vendor/
+          key: ${{ runner.os }}-vendor-${{ hashFiles('.gitmodules') }}
+
+      - name: Fetch submodules
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
+        run: git submodule update --init --recursive
 
       - name: Cache build artifacts
         id: cache
