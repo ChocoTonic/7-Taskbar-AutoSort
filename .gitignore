@@ -9,6 +9,7 @@ build/
 *.ilk
 *.exp
 *.lib
+!vendor/7tt-dll/MinHook/**/*.lib
 *.aps
 *.tlog
 *.log
