@@ -99,5 +99,8 @@
     <ClInclude Include="..\7tt-include\options_def.h" />
     <ClInclude Include="..\7tt-include\version.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\inject\inject.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
