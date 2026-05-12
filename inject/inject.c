@@ -1,6 +1,8 @@
 #include <windows.h>
+#include <stdio.h>
 #include <time.h>
 #include "explorer_inject.h"
+#include "library_load_errors.h"
 #include "options_def.h"
 #include "tray.h"
 #include "update.h"
@@ -56,6 +58,17 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
     (void)pCmdLine;
     (void)nShowCmd;
 
+    HANDLE hMutex = CreateMutexW(NULL, TRUE, L"7TaskbarAutoSort_SingleInstance");
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        MessageBoxW(NULL,
+                    L"7-Taskbar-AutoSort is already running.\n\nCheck the system tray (notification area).",
+                    L"7-Taskbar-AutoSort",
+                    MB_OK | MB_ICONINFORMATION);
+        if (hMutex) CloseHandle(hMutex);
+        return 0;
+    }
+
     int opts[OPTS_COUNT];
     ZeroMemory(opts, sizeof(opts));
 
@@ -71,12 +84,63 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         UpdatePromptIfAvailable(NULL);
     }
 
-    if (!ExtractDll()) return 1;
+    if (!ExtractDll())
+    {
+        MessageBoxW(
+            NULL,
+            L"Failed to extract autosort.dll to the application directory.\n\nCheck that the folder is writable.",
+            L"7-Taskbar-AutoSort",
+            MB_OK | MB_ICONERROR);
+        return 1;
+    }
 
     DWORD err = ExplorerInject(NULL, WM_APP, GetUserDefaultUILanguage(), opts, NULL);
-    if (err != 0) return (int)err;
+    if (err != 0)
+    {
+        WCHAR szMsg[384];
+        const WCHAR *pReason = L"Unknown error.";
+        switch (err)
+        {
+        case EXE_ERR_NO_DLL:
+            pReason = L"autosort.dll not found next to the EXE.";
+            break;
+        case EXE_ERR_NO_TASKBAR:
+            pReason = L"Taskbar window not found. Is Explorer running?";
+            break;
+        case EXE_ERR_NO_TASKLIST:
+            pReason = L"Task list window not found (unsupported shell).";
+            break;
+        case EXE_ERR_HIDDEN_TASKLIST:
+            pReason = L"Windows 11 taskbar is not supported.";
+            break;
+        case EXE_ERR_OPEN_PROCESS:
+            pReason = L"Could not open Explorer process. Try running as Administrator.";
+            break;
+        case INJ_ERR_BEFORE_RUN:
+            pReason = L"Injected code failed to start (DEP or antivirus may be blocking it).";
+            break;
+        case INJ_ERR_LOADLIBRARY:
+            pReason = L"Explorer could not load autosort.dll (missing dependency or bad DLL).";
+            break;
+        case EXE_ERR_VIRTUAL_ALLOC:
+            pReason = L"VirtualAllocEx failed — Exploit Protection may be blocking injection.";
+            break;
+        case EXE_ERR_CREATE_REMOTE_THREAD:
+            pReason = L"CreateRemoteThread failed. Try running as Administrator.";
+            break;
+        }
+        swprintf_s(szMsg, ARRAYSIZE(szMsg), L"Could not inject into Explorer (error %lu).\n\n%s", err, pReason);
+        MessageBoxW(NULL, szMsg, L"7-Taskbar-AutoSort", MB_OK | MB_ICONERROR);
+        return (int)err;
+    }
 
-    if (!TrayInit(hInst)) return 1;
+    if (!TrayInit(hInst))
+    {
+        MessageBoxW(NULL, L"Failed to create the system tray icon.", L"7-Taskbar-AutoSort", MB_OK | MB_ICONERROR);
+        return 1;
+    }
+
+    TrayShowBalloon(L"7-Taskbar-AutoSort", L"Running. Right-click the tray icon for options.");
 
     MSG msg;
     while (GetMessageW(&msg, NULL, 0, 0))

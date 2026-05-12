@@ -155,6 +155,17 @@ void TraySetTooltip(const WCHAR *pText)
     }
 }
 
+void TrayShowBalloon(const WCHAR *pTitle, const WCHAR *pMsg)
+{
+    if (!g_hTrayWnd || !pTitle || !pMsg) return;
+    g_nid.uFlags |= NIF_INFO;
+    g_nid.dwInfoFlags = NIIF_INFO | NIIF_NOSOUND;
+    wcscpy_s(g_nid.szInfoTitle, ARRAYSIZE(g_nid.szInfoTitle), pTitle);
+    wcscpy_s(g_nid.szInfo, ARRAYSIZE(g_nid.szInfo), pMsg);
+    Shell_NotifyIconW(NIM_MODIFY, &g_nid);
+    g_nid.uFlags &= ~NIF_INFO;
+}
+
 HWND TrayGetWindow(void)
 {
     return g_hTrayWnd;
