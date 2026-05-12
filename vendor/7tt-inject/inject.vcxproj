@@ -56,9 +56,9 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;shell32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;shell32.lib;advapi32.lib;winhttp.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -83,6 +83,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\inject\inject.c" />
+    <ClCompile Include="..\..\inject\tray.c" />
+    <ClCompile Include="..\..\inject\update.c" />
+    <ClCompile Include="..\..\inject\settings.c" />
     <ClCompile Include="explorer_inject.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -98,6 +101,11 @@
     <ClInclude Include="..\7tt-include\library_load_errors.h" />
     <ClInclude Include="..\7tt-include\options_def.h" />
     <ClInclude Include="..\7tt-include\version.h" />
+    <ClInclude Include="..\..\inject\autosort_version.h" />
+    <ClInclude Include="..\..\inject\resource.h" />
+    <ClInclude Include="..\..\inject\tray.h" />
+    <ClInclude Include="..\..\inject\update.h" />
+    <ClInclude Include="..\..\inject\settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\inject\inject.rc" />
