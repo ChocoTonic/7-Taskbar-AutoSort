@@ -26,16 +26,22 @@ diff against upstream.
 **One-liner to download and run the latest release** (Windows cmd):
 
 ```cmd
-powershell -c "cd $env:TEMP; Invoke-WebRequest https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe -OutFile 7-Taskbar-AutoSort.exe; .\7-Taskbar-AutoSort.exe"
+powershell -c "Invoke-WebRequest -Uri 'https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe' -OutFile $env:TEMP\7-Taskbar-AutoSort.exe -UseBasicParsing; & $env:TEMP\7-Taskbar-AutoSort.exe"
 ```
 
-Or get the files from [Releases](https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases) and run manually.
+Or with curl:
+
+```cmd
+curl -L -o %TEMP%\7-Taskbar-AutoSort.exe https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe && %TEMP%\7-Taskbar-AutoSort.exe
+```
+
+Or get the files manually from [Releases](https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases).
 
 ## Build
 
 Prerequisites:
 
-- Windows 10 / 11 host (build host can be Win 11; *runtime* target is
+- Windows 10 / 11 host (build host can be Win 11; _runtime_ target is
   Win 7/8/10)
 - Visual Studio 2022 (or newer) Build Tools with the "Desktop development
   with C++" workload. Toolset is set to `$(DefaultPlatformToolset)` so any
@@ -63,7 +69,7 @@ uploads both binaries as workflow artifacts. See
 1. Copy `7-Taskbar-AutoSort.exe` and `autosort.dll` (must be side-by-side)
    into the VM.
 2. Run `7-Taskbar-AutoSort.exe`. It will print `autosort.dll injected. Press
-   Ctrl-C to uninject and exit.` and stay running.
+Ctrl-C to uninject and exit.` and stay running.
 3. Open multiple windows of any app (Firefox, Notepad, RDP sessions, …).
 4. Within ~2 seconds, the windows in each grouped taskbar button should be
    reordered alphabetically by title.
