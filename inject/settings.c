@@ -15,7 +15,8 @@ void SettingsInit(void)
 
 int SettingsGetUpdateInterval(void)
 {
-    int interval = PSGetSingleInt(SECTION_NAME, KEY_INTERVAL, (int)DEFAULT_INTERVAL);
+    int interval = DEFAULT_INTERVAL;
+    PSGetSingleInt(SECTION_NAME, KEY_INTERVAL, &interval);
     if (interval < 1) interval = 1;
     if (interval > 365) interval = 365;
     return interval;
@@ -30,7 +31,8 @@ void SettingsSetUpdateInterval(int days)
 
 time_t SettingsGetLastCheckTime(void)
 {
-    int val = PSGetSingleInt(SECTION_NAME, KEY_LAST_CHECK, 0);
+    int val = 0;
+    PSGetSingleInt(SECTION_NAME, KEY_LAST_CHECK, &val);
     return (time_t)val;
 }
 
