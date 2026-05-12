@@ -1,0 +1,32 @@
+name: build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Release]
+        platform: [x64, Win32]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: msbuild 7-Taskbar-AutoSort.sln /p:Configuration=${{ matrix.config }} /p:Platform=${{ matrix.platform }} /m /nologo
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: 7-Taskbar-AutoSort-${{ matrix.config }}-${{ matrix.platform }}
+          path: |
+            build/${{ matrix.config }}-${{ matrix.platform }}/7-Taskbar-AutoSort.exe
+            build/${{ matrix.config }}-${{ matrix.platform }}/autosort.dll

@@ -1,0 +1,3 @@
+LIBRARY "autosort.dll"
+EXPORTS
+	Init @1

@@ -1,0 +1,36 @@
+# Build output
+build/
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.aps
+*.tlog
+*.log
+*.idb
+*.iobj
+*.ipdb
+*.map
+
+# Visual Studio user/cache files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+*.opendb
+*.VC.db
+*.VC.opendb
+
+# Resharper / VS tooling
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Local-only settings
+.vscode/
+*.local
