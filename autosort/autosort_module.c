@@ -10,9 +10,6 @@
 // itself, the marshal-to-taskbar-thread mechanism. We add only the timer.
 
 #include "stdafx.h"
-#include <stdio.h>
-#include <time.h>
-
 #include "autosort_module.h"
 #include "functions.h"          // DO2, GetButtonWnd, etc.
 #include "explorer_vars.h"      // EV_MM_TASKLIST_BUTTON_GROUPS_HDPA
@@ -28,29 +25,6 @@ extern UINT uTweakerMsg;
 static HANDLE g_hStopEvent = NULL;
 static HANDLE g_hPollThread = NULL;
 
-static void DebugLogItemsInGroup(FILE *pLog, const char *pPrefix, LONG_PTR *pButtonGroup)
-{
-    if (!pLog || !pButtonGroup) return;
-
-    fprintf(pLog, "%s:\n", pPrefix);
-
-    HDPA hdpa = (HDPA)pButtonGroup[DO2(1, 4)];
-    if (!hdpa) return;
-
-    int count = DPA_GetPtrCount(hdpa);
-    for (int j = 0; j < count; j++)
-    {
-        HWND hItem = (HWND)DPA_GetPtr(hdpa, j);
-        if (!hItem) continue;
-
-        wchar_t szTitle[256] = {0};
-        GetWindowTextW(hItem, szTitle, sizeof(szTitle) / sizeof(wchar_t));
-
-        fprintf(pLog, "  [%d] %S\n", j, szTitle);
-    }
-    fflush(pLog);
-}
-
 // Runs on the taskbar UI thread (via the MSG_DLL_CALLFUNC_PARAM dispatch in
 // wnd_proc.c). Safe to read Explorer's HDPA and call SortButtonGroupItems
 // directly here.
@@ -65,36 +39,12 @@ static LONG_PTR AutosortAllGroupsOnTaskbarThread(LONG_PTR lpMMTaskListLongPtr)
     int button_groups_count = (int)plp[0];
     LONG_PTR **button_groups = (LONG_PTR **)plp[1];
 
-    FILE *pLog = NULL;
-    fopen_s(&pLog, "C:\\autosort_debug.log", "a");
-    if (pLog) {
-        fprintf(pLog, "\n=== Autosort tick at %lld ===\n", (long long)time(NULL));
-        fflush(pLog);
-    }
-
     for (int i = 0; i < button_groups_count; i++)
     {
         if (!button_groups[i]) continue;
         int type = (int)button_groups[i][DO2(6, 8)];
         if (type == 1 || type == 3)
-        {
-            if (pLog)
-            {
-                fprintf(pLog, "\nGroup %d (type %d):\n", i, type);
-                DebugLogItemsInGroup(pLog, "BEFORE sort", button_groups[i]);
-            }
-
             SortButtonGroupItems(button_groups[i]);
-
-            if (pLog)
-                DebugLogItemsInGroup(pLog, "AFTER sort", button_groups[i]);
-        }
-    }
-
-    if (pLog)
-    {
-        fprintf(pLog, "=== End tick ===\n");
-        fclose(pLog);
     }
 
     return 0;
