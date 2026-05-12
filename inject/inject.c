@@ -8,6 +8,7 @@
 // - System tray icon with context menu (Check Updates, Settings, Exit)
 
 #include <windows.h>
+#include <stdio.h>
 #include <time.h>
 #include "explorer_inject.h"
 #include "options_def.h"
