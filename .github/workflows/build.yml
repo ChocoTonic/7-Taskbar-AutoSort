@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         config: [Release]
-        platform: [x64, Win32]
+        platform: [x64]
     steps:
       - uses: actions/checkout@v4
 
@@ -52,9 +52,5 @@ jobs:
           body: |
             Version: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
-
-            ## Downloads
-            - **Release x64**: autosort.dll & 7-Taskbar-AutoSort.exe
-            - **Release Win32**: autosort.dll & 7-Taskbar-AutoSort.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
