@@ -3,6 +3,8 @@ name: build
 on:
   push:
     branches: [main, master]
+    tags:
+      - 'v*'
   pull_request:
     branches: [main, master]
   workflow_dispatch:
@@ -34,7 +36,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
 
@@ -46,13 +48,13 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: release-${{ github.sha }}
-          name: Release ${{ github.sha }}
           files: artifacts/**/*
           body: |
-            Build artifacts for commit ${{ github.sha }}
+            Version: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
 
-            - Release x64: autosort.dll & 7-Taskbar-AutoSort.exe
-            - Release Win32: autosort.dll & 7-Taskbar-AutoSort.exe
+            ## Downloads
+            - **Release x64**: autosort.dll & 7-Taskbar-AutoSort.exe
+            - **Release Win32**: autosort.dll & 7-Taskbar-AutoSort.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
