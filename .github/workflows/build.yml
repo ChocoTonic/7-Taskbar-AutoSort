@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/*.c', '**/*.h', '*.sln', '**/*.vcxproj') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
