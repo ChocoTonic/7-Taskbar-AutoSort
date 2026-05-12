@@ -56,7 +56,7 @@ static BOOL FetchLatestVersion(WCHAR *pVersionOut, int cchMax)
     if (!WinHttpSendRequest(hRequest,
                             WINHTTP_NO_ADDITIONAL_HEADERS,
                             0,
-                            WINHTTP_NO_REQUEST_BODY,
+                            NULL,
                             0,
                             0,
                             0))
@@ -159,7 +159,7 @@ static BOOL DownloadFile(const WCHAR *pUrl, const WCHAR *pFilePath)
                                   WINHTTP_FLAG_SECURE);
     if (!hRequest) goto cleanup;
 
-    if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_BODY, 0, 0, 0))
+    if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, NULL, 0, 0, 0))
         goto cleanup;
 
     if (!WinHttpReceiveResponse(hRequest, NULL))
