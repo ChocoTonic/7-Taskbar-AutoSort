@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inject", "vendor\7tt-inject
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autosort", "vendor\7tt-dll\autosort.vcxproj", "{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "tests\tests.vcxproj", "{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,14 @@ Global
 		{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}.Release|Win32.Build.0 = Release|Win32
 		{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}.Release|x64.ActiveCfg = Release|x64
 		{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}.Release|x64.Build.0 = Release|x64
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Debug|Win32.Build.0 = Debug|Win32
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Debug|x64.ActiveCfg = Debug|x64
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Debug|x64.Build.0 = Debug|x64
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Release|Win32.ActiveCfg = Release|Win32
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Release|Win32.Build.0 = Release|Win32
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Release|x64.ActiveCfg = Release|x64
+		{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

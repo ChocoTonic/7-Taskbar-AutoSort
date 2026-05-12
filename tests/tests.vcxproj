@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}</ProjectGuid>
+    <ProjectGuid>{C3D4E5F6-A7B8-9012-3456-789ABCDEF012}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>inject</RootNamespace>
-    <ProjectName>inject</ProjectName>
+    <RootNamespace>tests</RootNamespace>
+    <ProjectName>tests</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -41,24 +41,23 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
-    <OutDir>..\..\build\$(Configuration)-$(Platform)\</OutDir>
-    <IntDir>..\..\build\obj\$(Configuration)-$(Platform)\inject\</IntDir>
-    <TargetName>7-Taskbar-AutoSort</TargetName>
+    <OutDir>$(SolutionDir)build\$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)build\obj\$(Configuration)-$(Platform)\tests\</IntDir>
+    <TargetName>tests</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>true</GenerateManifest>
-    <IncludePath>.;include;..\7tt-include;..\7tt-dll;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_UNICODE;UNICODE;GTEST_HAS_EXCEPTIONS=0;_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\vendor\googletest\googletest\include;$(ProjectDir)..\vendor\googletest\googletest;$(ProjectDir)..\inject;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;shell32.lib;advapi32.lib;winhttp.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -82,37 +81,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\inject\inject.c" />
-    <ClCompile Include="..\..\inject\tray.c" />
-    <ClCompile Include="..\..\inject\update.c" />
-    <ClCompile Include="..\..\inject\version_compare.c" />
-    <ClCompile Include="..\..\inject\settings.c" />
-    <ClCompile Include="..\7tt-include\portable_settings.c" />
-    <ClCompile Include="..\7tt-include\options_def.c" />
-    <ClCompile Include="explorer_inject.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\vendor\googletest\googletest\src\gtest-all.cc">
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
-    <ClCompile Include="explorer_inject_functions.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
+    <ClCompile Include="..\vendor\googletest\googletest\src\gtest_main.cc">
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="explorer_inject.h" />
-    <ClInclude Include="explorer_inject_functions.h" />
-    <ClInclude Include="..\7tt-include\inject_init_struct_def.h" />
-    <ClInclude Include="..\7tt-include\library_load_errors.h" />
-    <ClInclude Include="..\7tt-include\options_def.h" />
-    <ClInclude Include="..\7tt-include\version.h" />
-    <ClInclude Include="..\..\inject\autosort_version.h" />
-    <ClInclude Include="..\..\inject\resource.h" />
-    <ClInclude Include="..\..\inject\tray.h" />
-    <ClInclude Include="..\..\inject\update.h" />
-    <ClInclude Include="..\..\inject\version_compare.h" />
-    <ClInclude Include="..\..\inject\settings.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\..\inject\inject.rc" />
+    <ClCompile Include="..\inject\version_compare.c" />
+    <ClCompile Include="test_version_compare.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

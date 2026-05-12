@@ -17,7 +17,7 @@ PLATFORM ?= x64
 OUTDIR  := build\$(CONFIG)-$(PLATFORM)
 ZIPNAME := build\7-Taskbar-AutoSort-$(CONFIG)-$(PLATFORM).zip
 
-.PHONY: all build debug release clean package help lint
+.PHONY: all build debug release clean package help lint test test-release
 
 all: release
 
@@ -27,6 +27,8 @@ help:
 	@echo   make debug             Build Debug x64
 	@echo   make build             Build with current CONFIG/PLATFORM ($(CONFIG)/$(PLATFORM))
 	@echo   make lint              Run MSVC static analysis checks
+	@echo   make test              Build and run tests (current CONFIG/PLATFORM)
+	@echo   make test-release      Build and run tests (Release x64)
 	@echo   make clean             Remove build artifacts
 	@echo   make package           Zip the Release x64 binaries
 	@echo.
@@ -40,6 +42,13 @@ lint:
 	@echo Running MSVC static analysis...
 	@echo Checks: Undefined symbols, missing includes, mismatched braces, type errors
 	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /p:RunCodeAnalysis=true /m /nologo
+
+test:
+	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
+	build\$(CONFIG)-$(PLATFORM)\tests.exe
+
+test-release:
+	@$(MAKE) test CONFIG=Release PLATFORM=x64
 
 build:
 	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
