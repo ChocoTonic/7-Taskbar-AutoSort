@@ -1,9 +1,9 @@
 #include <windows.h>
 #include <winhttp.h>
 #include <stdio.h>
-#include <string.h>
 #include "autosort_version.h"
 #include "explorer_inject.h"
+#include "json_util.h"
 #include "update.h"
 #include "version_compare.h"
 
@@ -63,25 +63,7 @@ static BOOL FetchLatestVersion(WCHAR *pVersionOut, int cchMax)
     if (dwDownloaded > 0)
     {
         pResponse[dwDownloaded] = '\0';
-        const char *pTag = strstr(pResponse, "\"tag_name\":\"");
-        if (pTag)
-        {
-            pTag += 12;
-            char szVersion[64];
-            int i = 0;
-            while (i < 63 && pTag[i] != '"')
-            {
-                szVersion[i] = pTag[i];
-                i++;
-            }
-            szVersion[i] = '\0';
-
-            if (szVersion[0] == 'v')
-            {
-                MultiByteToWideChar(CP_UTF8, 0, szVersion + 1, -1, pVersionOut, cchMax);
-                bSuccess = TRUE;
-            }
-        }
+        bSuccess = ParseVersionFromJson(pResponse, pVersionOut, cchMax);
     }
 
 cleanup:
@@ -210,4 +192,22 @@ void UpdateApply(const WCHAR *pNewVersion)
     }
 
     ExitProcess(0);
+}
+
+BOOL UpdatePromptIfAvailable(HWND hParent)
+{
+    WCHAR szNewVersion[64] = {0};
+    if (!UpdateCheckAvailable(szNewVersion, 64))
+        return FALSE;
+
+    WCHAR szPrompt[256];
+    swprintf_s(szPrompt, 256,
+               L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
+
+    if (MessageBoxW(hParent, szPrompt, L"Update Available",
+                    MB_YESNO | MB_ICONINFORMATION) == IDYES)
+    {
+        UpdateApply(szNewVersion);
+    }
+    return TRUE;
 }

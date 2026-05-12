@@ -86,6 +86,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\..\inject\inject.c" />
+    <ClCompile Include="..\..\inject\json_util.c" />
     <ClCompile Include="..\..\inject\tray.c" />
     <ClCompile Include="..\..\inject\update.c" />
     <ClCompile Include="..\..\inject\version_compare.c" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cjson\cJSON.h" />
+    <ClInclude Include="..\..\inject\json_util.h" />
     <ClInclude Include="explorer_inject.h" />
     <ClInclude Include="explorer_inject_functions.h" />
     <ClInclude Include="..\7tt-include\inject_init_struct_def.h" />

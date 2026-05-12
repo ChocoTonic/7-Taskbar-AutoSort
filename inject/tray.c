@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <shellapi.h>
+#include <stdio.h>
 #include "resource.h"
 #include "tray.h"
 #include "update.h"
