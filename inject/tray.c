@@ -18,10 +18,11 @@ static INT_PTR CALLBACK SettingsDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, 
     {
     case WM_INITDIALOG:
     {
-        int interval = SettingsGetUpdateInterval();
         WCHAR szBuffer[16];
-        swprintf_s(szBuffer, 16, L"%d", interval);
+        swprintf_s(szBuffer, 16, L"%d", SettingsGetUpdateInterval());
         SetDlgItemTextW(hDlg, IDC_DAYS, szBuffer);
+        swprintf_s(szBuffer, 16, L"%d", SettingsGetPollIntervalSec());
+        SetDlgItemTextW(hDlg, IDC_POLL_SECS, szBuffer);
         return TRUE;
     }
     case WM_COMMAND:
@@ -29,8 +30,9 @@ static INT_PTR CALLBACK SettingsDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, 
         {
             WCHAR szBuffer[16] = {0};
             GetDlgItemTextW(hDlg, IDC_DAYS, szBuffer, 16);
-            int days = _wtoi(szBuffer);
-            SettingsSetUpdateInterval(days);
+            SettingsSetUpdateInterval(_wtoi(szBuffer));
+            GetDlgItemTextW(hDlg, IDC_POLL_SECS, szBuffer, 16);
+            SettingsSetPollIntervalSec(_wtoi(szBuffer));
             EndDialog(hDlg, IDOK);
             return TRUE;
         }

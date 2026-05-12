@@ -5,6 +5,7 @@
 
 // Dialog control IDs
 #define IDC_DAYS 1001
+#define IDC_POLL_SECS 1002
 #define IDC_STATIC -1
 
 // Menu item IDs

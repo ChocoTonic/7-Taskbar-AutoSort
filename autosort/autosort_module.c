@@ -20,10 +20,31 @@ extern HWND hTaskbarWnd;
 extern LONG_PTR lpTaskListLongPtr;
 extern UINT uTweakerMsg;
 
-#define AUTOSORT_POLL_INTERVAL_MS 2000
+#define AUTOSORT_DEFAULT_POLL_MS 2000
+#define AUTOSORT_MIN_POLL_MS 1000
+#define AUTOSORT_MAX_POLL_MS 3600000
 
 static HANDLE g_hStopEvent = NULL;
 static HANDLE g_hPollThread = NULL;
+
+static DWORD ReadPollIntervalMs(void)
+{
+    DWORD val = AUTOSORT_DEFAULT_POLL_MS / 1000;
+    HKEY hKey;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\7-Taskbar-AutoSort\\Autosort", 0, KEY_QUERY_VALUE, &hKey) ==
+        ERROR_SUCCESS)
+    {
+        DWORD cbVal = sizeof(val);
+        if (RegQueryValueExW(hKey, L"PollIntervalSec", NULL, NULL, (LPBYTE)&val, &cbVal) != ERROR_SUCCESS ||
+            cbVal != sizeof(DWORD))
+            val = AUTOSORT_DEFAULT_POLL_MS / 1000;
+        RegCloseKey(hKey);
+    }
+    if (val > AUTOSORT_MAX_POLL_MS / 1000) val = AUTOSORT_MAX_POLL_MS / 1000;
+    DWORD ms = val * 1000;
+    if (ms < AUTOSORT_MIN_POLL_MS) ms = AUTOSORT_MIN_POLL_MS;
+    return ms;
+}
 
 // Runs on the taskbar UI thread (via the MSG_DLL_CALLFUNC_PARAM dispatch in
 // wnd_proc.c). Safe to read Explorer's HDPA and call SortButtonGroupItems
@@ -55,7 +76,7 @@ static DWORD WINAPI AutosortPollThreadProc(LPVOID p)
 
     for (;;)
     {
-        DWORD wait = WaitForSingleObject(g_hStopEvent, AUTOSORT_POLL_INTERVAL_MS);
+        DWORD wait = WaitForSingleObject(g_hStopEvent, ReadPollIntervalMs());
         if (wait == WAIT_OBJECT_0) break;
 
         // Bail if 7TT's bootstrap hasn't populated the globals yet, or if
