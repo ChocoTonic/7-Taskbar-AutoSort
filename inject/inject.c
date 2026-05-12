@@ -90,7 +90,10 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         }
     }
 
-    if (!ExtractDll()) return 1;
+    if (!ExtractDll()) {
+        MessageBoxW(NULL, L"Failed to extract DLL", L"Error", MB_OK | MB_ICONERROR);
+        return 1;
+    }
 
     DWORD err = ExplorerInject(
         NULL,
@@ -100,9 +103,17 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         NULL
     );
 
-    if (err != 0) return (int)err;
+    if (err != 0) {
+        WCHAR szError[256];
+        swprintf_s(szError, 256, L"ExplorerInject failed with code %lu", err);
+        MessageBoxW(NULL, szError, L"Injection Error", MB_OK | MB_ICONERROR);
+        return (int)err;
+    }
 
-    if (!TrayInit(hInst)) return 1;
+    if (!TrayInit(hInst)) {
+        MessageBoxW(NULL, L"Failed to create system tray icon", L"Error", MB_OK | MB_ICONERROR);
+        return 1;
+    }
 
     MSG msg;
     while (GetMessageW(&msg, NULL, 0, 0))
