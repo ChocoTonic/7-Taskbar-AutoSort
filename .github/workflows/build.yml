@@ -3,8 +3,6 @@ name: build
 on:
   push:
     branches: [main, master]
-    tags:
-      - 'v*'
   pull_request:
     branches: [main, master]
   workflow_dispatch:
@@ -36,7 +34,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -48,9 +46,11 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: release-${{ github.run_number }}
+          name: Release ${{ github.run_number }}
           files: artifacts/**/*
           body: |
-            Version: ${{ github.ref_name }}
-            Commit: ${{ github.sha }}
+            Automatic release from commit ${{ github.sha }}
+            Build #${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
