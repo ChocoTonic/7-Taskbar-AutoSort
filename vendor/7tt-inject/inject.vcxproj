@@ -86,6 +86,8 @@
     <ClCompile Include="..\..\inject\tray.c" />
     <ClCompile Include="..\..\inject\update.c" />
     <ClCompile Include="..\..\inject\settings.c" />
+    <ClCompile Include="..\7tt-include\portable_settings.c" />
+    <ClCompile Include="..\7tt-include\options_def.c" />
     <ClCompile Include="explorer_inject.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
