@@ -36,6 +36,3 @@ _ReSharper*/
 .vscode/
 *.local
 
-# NuGet
-nuget.exe
-packages/

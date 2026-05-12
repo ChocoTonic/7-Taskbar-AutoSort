@@ -19,16 +19,8 @@ jobs:
         platform: [x64]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
         with:
-          path: packages/
-          key: nuget-${{ hashFiles('**/packages.config') }}
-          restore-keys: nuget-
-
-      - name: Restore NuGet packages
-        run: nuget restore 7-Taskbar-AutoSort.sln
+          submodules: true
 
       - name: Cache build artifacts
         id: cache
