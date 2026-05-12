@@ -44,6 +44,7 @@ lint:
 	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /p:RunCodeAnalysis=true /m /nologo
 
 test:
+	nuget.exe restore $(SLN)
 	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
 	build\$(CONFIG)-$(PLATFORM)\tests.exe
 
