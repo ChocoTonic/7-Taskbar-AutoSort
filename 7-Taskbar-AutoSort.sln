@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inject", "vendor\7tt-inject\inject.vcxproj", "{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1} = {B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autosort", "vendor\7tt-dll\autosort.vcxproj", "{B1C2D3E4-F5A6-7890-1234-56789ABCDEF1}"
 EndProject

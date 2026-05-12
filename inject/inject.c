@@ -136,6 +136,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
 
     if (!TrayInit(hInst))
     {
+        ExplorerCleanup();
         MessageBoxW(NULL, L"Failed to create the system tray icon.", L"7-Taskbar-AutoSort", MB_OK | MB_ICONERROR);
         return 1;
     }
