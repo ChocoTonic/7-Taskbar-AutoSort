@@ -9,8 +9,7 @@ BOOL VersionCompare(const WCHAR *pCurrent, const WCHAR *pNew)
 
     if (swscanf_s(pCurrent, L"%d.%d.%d", &curr_major, &curr_minor, &curr_patch) != 3)
         curr_major = curr_minor = curr_patch = 0;
-    if (swscanf_s(pNew, L"%d.%d.%d", &new_major, &new_minor, &new_patch) != 3)
-        new_major = new_minor = new_patch = 0;
+    if (swscanf_s(pNew, L"%d.%d.%d", &new_major, &new_minor, &new_patch) != 3) new_major = new_minor = new_patch = 0;
 
     if (new_major > curr_major) return TRUE;
     if (new_major < curr_major) return FALSE;
