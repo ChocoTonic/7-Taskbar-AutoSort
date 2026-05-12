@@ -62,21 +62,9 @@ static void ShowContextMenu(HWND hWnd)
 
 static void CheckForUpdates(HWND hWnd)
 {
-    WCHAR szNewVersion[64] = {0};
-
-    if (UpdateCheckAvailable(szNewVersion, 64))
-    {
-        WCHAR szPrompt[256];
-        swprintf_s(szPrompt, 256, L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
-        if (MessageBoxW(hWnd, szPrompt, L"Update Available", MB_YESNO | MB_ICONINFORMATION) == IDYES)
-        {
-            UpdateApply(szNewVersion);
-        }
-    }
-    else
-    {
-        MessageBoxW(hWnd, L"You are running the latest version.", L"Up to Date", MB_OK | MB_ICONINFORMATION);
-    }
+    if (!UpdatePromptIfAvailable(hWnd))
+        MessageBoxW(hWnd, L"You are running the latest version.",
+                    L"Up to Date", MB_OK | MB_ICONINFORMATION);
 }
 
 static LRESULT CALLBACK TrayWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

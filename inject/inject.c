@@ -1,5 +1,4 @@
 #include <windows.h>
-#include <stdio.h>
 #include <time.h>
 #include "explorer_inject.h"
 #include "options_def.h"
@@ -65,19 +64,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
 
     if (now - lastCheck >= (time_t)(interval * 86400))
     {
-        WCHAR szNewVersion[64] = {0};
         SettingsSetLastCheckTime(now);
-
-        if (UpdateCheckAvailable(szNewVersion, 64))
-        {
-            WCHAR szPrompt[256];
-            swprintf_s(szPrompt, 256, L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
-            if (MessageBoxW(NULL, szPrompt, L"Update Available", MB_YESNO | MB_ICONINFORMATION) == IDYES)
-            {
-                UpdateApply(szNewVersion);
-                return 0;
-            }
-        }
+        UpdatePromptIfAvailable(NULL);
     }
 
     if (!ExtractDll())
