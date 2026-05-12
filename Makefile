@@ -2,14 +2,15 @@
 #
 # Requires:
 #   - GNU Make (Windows: choco install make, or use Git-bash/MSYS2 make)
-#   - MSBuild.exe on PATH (launch "x64 Native Tools Command Prompt for VS 2022"
-#     or run vcvarsall.bat first). Override with MSBUILD=... if needed.
+#   - Visual Studio Build Tools (MSBuild auto-discovered; override with MSBUILD=...)
+#   - LLVM clang-format for `format`/`format-check` targets (override with CLANG_FORMAT=...)
 
 SHELL := cmd
 .SHELLFLAGS := /C
 
-MSBUILD      ?= MSBuild.exe
-CLANG_FORMAT ?= clang-format
+# Auto-discover MSBuild from known VS locations if not already on PATH or overridden.
+MSBUILD      ?= $(shell scripts\find-msbuild.bat)
+CLANG_FORMAT ?= $(shell (where clang-format >nul 2>&1 && where clang-format) || (if exist "C:\Program Files\LLVM\bin\clang-format.exe" echo C:\Program Files\LLVM\bin\clang-format.exe) || echo clang-format)
 
 SLN     := 7-Taskbar-AutoSort.sln
 CONFIG  ?= Release
@@ -37,15 +38,15 @@ help:
 	@echo.
 	@echo Overrides:
 	@echo   make build CONFIG=Debug PLATFORM=Win32
-	@echo   make build MSBUILD="C:\path\to\MSBuild.exe"
-	@echo   make format CLANG_FORMAT="C:\Program Files\LLVM\bin\clang-format.exe"
+	@echo   make build MSBUILD=C:\path\to\MSBuild.exe
+	@echo   make format CLANG_FORMAT=C:\path\to\clang-format.exe
 	@echo.
 	@echo Pre-build validation (macOS): ./scripts/validate-build.sh
 
 lint:
 	@echo Running MSVC static analysis...
 	@echo Checks: Undefined symbols, missing includes, mismatched braces, type errors
-	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /p:RunCodeAnalysis=true /m /nologo
+	"$(MSBUILD)" $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /p:RunCodeAnalysis=true /m /nologo
 
 FORMAT_SOURCES := inject\inject.c inject\json_util.c inject\json_util.h inject\settings.c \
 	inject\settings.h inject\tray.c inject\tray.h inject\update.c inject\update.h \
@@ -54,20 +55,20 @@ FORMAT_SOURCES := inject\inject.c inject\json_util.c inject\json_util.h inject\s
 	tests\test_json_util.cpp tests\test_version_compare.cpp
 
 format:
-	$(CLANG_FORMAT) -i $(FORMAT_SOURCES)
+	"$(CLANG_FORMAT)" -i $(FORMAT_SOURCES)
 
 format-check:
-	$(CLANG_FORMAT) --dry-run --Werror $(FORMAT_SOURCES)
+	"$(CLANG_FORMAT)" --dry-run --Werror $(FORMAT_SOURCES)
 
 test:
-	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
+	"$(MSBUILD)" $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
 	build\$(CONFIG)-$(PLATFORM)\tests.exe
 
 test-release:
 	@$(MAKE) test CONFIG=Release PLATFORM=x64
 
 build:
-	$(MSBUILD) $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
+	"$(MSBUILD)" $(SLN) /p:Configuration=$(CONFIG) /p:Platform=$(PLATFORM) /m /nologo
 
 release:
 	@$(MAKE) build CONFIG=Release PLATFORM=x64
