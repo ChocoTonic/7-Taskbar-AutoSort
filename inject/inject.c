@@ -64,6 +64,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
 {
     (void)hPrevInst; (void)pCmdLine; (void)nShowCmd;
 
+    MessageBoxW(NULL, L"wWinMain entry point reached", L"7-Taskbar-AutoSort", MB_OK);
+
     AllocConsole();
     FILE *pFile = NULL;
     freopen_s(&pFile, "CONOUT$", "w", stdout);
@@ -73,9 +75,12 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
     if (pDebugLog) {
         fprintf(pDebugLog, "=== 7-Taskbar-AutoSort startup ===\n");
         fflush(pDebugLog);
+    } else {
+        MessageBoxW(NULL, L"Failed to open debug log", L"Error", MB_OK);
     }
 
     wprintf(L"[DEBUG] Starting 7-Taskbar-AutoSort\n");
+    MessageBoxW(NULL, L"AllocConsole successful", L"7-Taskbar-AutoSort", MB_OK);
 
     int opts[OPTS_COUNT];
     ZeroMemory(opts, sizeof(opts));
@@ -83,6 +88,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
     wprintf(L"[DEBUG] Initializing settings\n");
     if (pDebugLog) { fprintf(pDebugLog, "[1/5] Initializing settings...\n"); fflush(pDebugLog); }
     SettingsInit();
+    MessageBoxW(NULL, L"Step 1/5: Settings initialized", L"Progress", MB_OK);
     wprintf(L"[DEBUG] Settings initialized\n");
     if (pDebugLog) { fprintf(pDebugLog, "[1/5] OK - Settings initialized\n"); fflush(pDebugLog); }
 
@@ -117,6 +123,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
             if (pDebugLog) { fprintf(pDebugLog, "     No update available\n"); fflush(pDebugLog); }
         }
     }
+    MessageBoxW(NULL, L"Step 2/5: Update check complete", L"Progress", MB_OK);
     if (pDebugLog) { fprintf(pDebugLog, "[2/5] OK - Update check complete\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Extracting DLL\n");
@@ -127,6 +134,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         MessageBoxW(NULL, L"Failed to extract DLL", L"Error", MB_OK | MB_ICONERROR);
         return 1;
     }
+    MessageBoxW(NULL, L"Step 3/5: DLL extracted", L"Progress", MB_OK);
     if (pDebugLog) { fprintf(pDebugLog, "[3/5] OK - DLL extracted\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] DLL extracted, injecting into explorer\n");
@@ -147,6 +155,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         MessageBoxW(NULL, szError, L"Injection Error", MB_OK | MB_ICONERROR);
         return (int)err;
     }
+    MessageBoxW(NULL, L"Step 4/5: DLL injected into explorer", L"Progress", MB_OK);
     if (pDebugLog) { fprintf(pDebugLog, "[4/5] OK - DLL injected into explorer\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Creating tray icon\n");
@@ -157,6 +166,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         MessageBoxW(NULL, L"Failed to create system tray icon", L"Error", MB_OK | MB_ICONERROR);
         return 1;
     }
+    MessageBoxW(NULL, L"Step 5/5: Tray icon created - entering message loop", L"Progress", MB_OK);
     if (pDebugLog) { fprintf(pDebugLog, "[5/5] OK - Tray icon created\n\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Tray icon created, entering message loop\n");
