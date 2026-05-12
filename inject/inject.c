@@ -67,16 +67,27 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
     AllocConsole();
     FILE *pFile = NULL;
     freopen_s(&pFile, "CONOUT$", "w", stdout);
+
+    FILE *pDebugLog = NULL;
+    fopen_s(&pDebugLog, "C:\\autosort_inject.log", "w");
+    if (pDebugLog) {
+        fprintf(pDebugLog, "=== 7-Taskbar-AutoSort startup ===\n");
+        fflush(pDebugLog);
+    }
+
     wprintf(L"[DEBUG] Starting 7-Taskbar-AutoSort\n");
 
     int opts[OPTS_COUNT];
     ZeroMemory(opts, sizeof(opts));
 
     wprintf(L"[DEBUG] Initializing settings\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[1/5] Initializing settings...\n"); fflush(pDebugLog); }
     SettingsInit();
     wprintf(L"[DEBUG] Settings initialized\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[1/5] OK - Settings initialized\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Checking for updates\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[2/5] Checking for updates...\n"); fflush(pDebugLog); }
     time_t lastCheck = SettingsGetLastCheckTime();
     int interval = SettingsGetUpdateInterval();
     time_t now = time(NULL);
@@ -84,33 +95,42 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
     if (now - lastCheck >= (time_t)(interval * 86400))
     {
         wprintf(L"[DEBUG] Update interval elapsed, checking for updates\n");
+        if (pDebugLog) { fprintf(pDebugLog, "     Update interval elapsed, fetching GitHub...\n"); fflush(pDebugLog); }
         WCHAR szNewVersion[64] = {0};
         SettingsSetLastCheckTime(now);
 
         if (UpdateCheckAvailable(szNewVersion, 64))
         {
             wprintf(L"[DEBUG] Update found: %s\n", szNewVersion);
+            if (pDebugLog) { fprintf(pDebugLog, "     Update found: %S\n", szNewVersion); fflush(pDebugLog); }
             WCHAR szPrompt[256];
             swprintf_s(szPrompt, 256, L"Update available: v%s\n\nWould you like to update now?", szNewVersion);
             if (MessageBoxW(NULL, szPrompt, L"Update Available", MB_YESNO | MB_ICONINFORMATION) == IDYES)
             {
+                if (pDebugLog) { fprintf(pDebugLog, "     User chose to update, calling UpdateApply...\n"); fflush(pDebugLog); }
                 UpdateApply(szNewVersion);
                 return 0;
             }
         }
         else {
             wprintf(L"[DEBUG] No update available\n");
+            if (pDebugLog) { fprintf(pDebugLog, "     No update available\n"); fflush(pDebugLog); }
         }
     }
+    if (pDebugLog) { fprintf(pDebugLog, "[2/5] OK - Update check complete\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Extracting DLL\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[3/5] Extracting DLL from resources...\n"); fflush(pDebugLog); }
     if (!ExtractDll()) {
         wprintf(L"[DEBUG] ERROR: Failed to extract DLL\n");
+        if (pDebugLog) { fprintf(pDebugLog, "[3/5] ERROR: Failed to extract DLL\n"); fflush(pDebugLog); }
         MessageBoxW(NULL, L"Failed to extract DLL", L"Error", MB_OK | MB_ICONERROR);
         return 1;
     }
+    if (pDebugLog) { fprintf(pDebugLog, "[3/5] OK - DLL extracted\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] DLL extracted, injecting into explorer\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[4/5] Injecting DLL into explorer.exe...\n"); fflush(pDebugLog); }
     DWORD err = ExplorerInject(
         NULL,
         WM_APP,
@@ -121,20 +141,26 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
 
     if (err != 0) {
         wprintf(L"[DEBUG] ERROR: ExplorerInject failed with code %lu\n", err);
+        if (pDebugLog) { fprintf(pDebugLog, "[4/5] ERROR: ExplorerInject failed with code %lu\n", err); fflush(pDebugLog); }
         WCHAR szError[256];
         swprintf_s(szError, 256, L"ExplorerInject failed with code %lu", err);
         MessageBoxW(NULL, szError, L"Injection Error", MB_OK | MB_ICONERROR);
         return (int)err;
     }
+    if (pDebugLog) { fprintf(pDebugLog, "[4/5] OK - DLL injected into explorer\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Creating tray icon\n");
+    if (pDebugLog) { fprintf(pDebugLog, "[5/5] Creating system tray icon...\n"); fflush(pDebugLog); }
     if (!TrayInit(hInst)) {
         wprintf(L"[DEBUG] ERROR: Failed to create tray icon\n");
+        if (pDebugLog) { fprintf(pDebugLog, "[5/5] ERROR: Failed to create tray icon\n"); fflush(pDebugLog); }
         MessageBoxW(NULL, L"Failed to create system tray icon", L"Error", MB_OK | MB_ICONERROR);
         return 1;
     }
+    if (pDebugLog) { fprintf(pDebugLog, "[5/5] OK - Tray icon created\n\n"); fflush(pDebugLog); }
 
     wprintf(L"[DEBUG] Tray icon created, entering message loop\n");
+    if (pDebugLog) { fprintf(pDebugLog, "=== Startup complete, entering message loop ===\n"); fflush(pDebugLog); }
 
     MSG msg;
     while (GetMessageW(&msg, NULL, 0, 0))
@@ -143,7 +169,15 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR pCmdLine, int n
         DispatchMessageW(&msg);
     }
 
+    if (pDebugLog) { fprintf(pDebugLog, "=== Message loop exited, shutting down ===\n"); fflush(pDebugLog); }
+
     ExplorerCleanup();
     TrayDestroy();
+
+    if (pDebugLog) {
+        fprintf(pDebugLog, "=== Shutdown complete ===\n");
+        fflush(pDebugLog);
+        fclose(pDebugLog);
+    }
     return 0;
 }

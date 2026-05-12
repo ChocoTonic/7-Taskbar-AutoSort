@@ -67,8 +67,10 @@ static LONG_PTR AutosortAllGroupsOnTaskbarThread(LONG_PTR lpMMTaskListLongPtr)
 
     FILE *pLog = NULL;
     fopen_s(&pLog, "C:\\autosort_debug.log", "a");
-    if (pLog)
+    if (pLog) {
         fprintf(pLog, "\n=== Autosort tick at %lld ===\n", (long long)time(NULL));
+        fflush(pLog);
+    }
 
     for (int i = 0; i < button_groups_count; i++)
     {
