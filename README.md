@@ -23,7 +23,9 @@ diff against upstream.
 
 ## Download Latest Release
 
-**One-liner to download and run the latest release** (Windows cmd):
+**Single executable** — the DLL is embedded and self-extracted at runtime.
+
+**One-liner to download and run** (Windows cmd):
 
 ```cmd
 powershell -c "Invoke-WebRequest -Uri 'https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe' -OutFile $env:TEMP\7-Taskbar-AutoSort.exe -UseBasicParsing; & $env:TEMP\7-Taskbar-AutoSort.exe"
@@ -35,7 +37,7 @@ Or with curl:
 curl -L -o %TEMP%\7-Taskbar-AutoSort.exe https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe && %TEMP%\7-Taskbar-AutoSort.exe
 ```
 
-Or get the files manually from [Releases](https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases).
+Or download manually from [Releases](https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases).
 
 ## Build
 
@@ -66,8 +68,8 @@ uploads both binaries as workflow artifacts. See
 
 ## Run (inside a VM)
 
-1. Copy `7-Taskbar-AutoSort.exe` and `autosort.dll` (must be side-by-side)
-   into the VM.
+1. Copy `7-Taskbar-AutoSort.exe` into the VM (the DLL is embedded and
+   self-extracts).
 2. Run `7-Taskbar-AutoSort.exe`. It will print `autosort.dll injected. Press
 Ctrl-C to uninject and exit.` and stay running.
 3. Open multiple windows of any app (Firefox, Notepad, RDP sessions, …).
