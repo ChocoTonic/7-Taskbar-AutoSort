@@ -21,6 +21,16 @@ diff against upstream.
 > (`Taskbar.View.dll` hosted in XAML), and none of the techniques used here
 > apply.
 
+## Download Latest Release
+
+**One-liner to download and run the latest release** (Windows cmd):
+
+```cmd
+powershell -c "cd $env:TEMP; Invoke-WebRequest https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases/latest/download/7-Taskbar-AutoSort.exe -OutFile 7-Taskbar-AutoSort.exe; .\7-Taskbar-AutoSort.exe"
+```
+
+Or get the files from [Releases](https://github.com/ChocoTonic/7-Taskbar-AutoSort/releases) and run manually.
+
 ## Build
 
 Prerequisites:
