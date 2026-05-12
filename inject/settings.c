@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <stdio.h>
 #include <time.h>
 #include "portable_settings.h"
 #include "settings.h"
@@ -31,12 +32,16 @@ void SettingsSetUpdateInterval(int days)
 
 time_t SettingsGetLastCheckTime(void)
 {
-    int val = 0;
-    PSGetSingleInt(SECTION_NAME, KEY_LAST_CHECK, &val);
-    return (time_t)val;
+    WCHAR szVal[32] = {0};
+    UINT sz = ARRAYSIZE(szVal);
+    if (PSGetSingleString(SECTION_NAME, KEY_LAST_CHECK, szVal, &sz) != ERROR_SUCCESS)
+        return 0;
+    return (time_t)_wtoi64(szVal);
 }
 
 void SettingsSetLastCheckTime(time_t t)
 {
-    PSSetSingleInt(SECTION_NAME, KEY_LAST_CHECK, (int)t);
+    WCHAR szVal[32];
+    swprintf_s(szVal, ARRAYSIZE(szVal), L"%lld", (long long)t);
+    PSSetSingleString(SECTION_NAME, KEY_LAST_CHECK, szVal);
 }
